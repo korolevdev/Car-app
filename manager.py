@@ -172,7 +172,6 @@ if __name__ == "__main__":
 				data = android.recv(1024)
 				if data:
 					dest, speed, myo_st = decode(int(data))
-					#motors_set(dest, speed, tar.dist, leftb, rightb)
 					send_web(tar.lv,tar.dist,speed,dest,dest)
 			except:
 				True
