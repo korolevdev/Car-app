@@ -1,6 +1,6 @@
+#/usr/bin/env python
 import sys
 sys.path.append('/usr/local/lib/python2.7/site-packages')
-#/usr/bin/env python
 import time
 import numpy as np
 import cv2
@@ -15,10 +15,7 @@ cam.set(3,320)
 cam.set(4,180)
 
 ret, prev = cam.read()
-#prev = prev[200:400,100:300]
 prev = cv2.resize(prev,(320,180), interpolation = cv2.INTER_LINEAR)
-#cv2.imwrite('1.jpg',prev)
-#prev = cv2.QueryFrame(cam)
 prevgray = cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY)
 
 cols = 320
@@ -26,7 +23,6 @@ rows = 180
 
 while 1:
     ret, img = cam.read()
-    #img = img[200:400,100:300]
     img = cv2.resize(img,(320,180), interpolation = cv2.INTER_LINEAR)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     flow = cv2.calcOpticalFlowFarneback(prevgray, gray, 0.5, 3, 15, 3, 5, 1.2, 0)
@@ -53,10 +49,8 @@ while 1:
             print(left, ' ', right)
             if time.time() - start_time > 0.1:
                 if right > left:
-                    #setattr(t,'turn',4)
                     print('right')
                 else:
-                    #setattr(t,'turn',3)
                     print('left')
                 detect = 0
                 left = 0
@@ -65,9 +59,6 @@ while 1:
             detect = 1
             left = 0
             right = 0
-            #t.turn = 0
             start_time = time.time()
-    #else:
-       #detect = 0
 cv2.VideoCapture(0).release()
 
