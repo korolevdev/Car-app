@@ -17,11 +17,6 @@ from utils import *
 from connect import *
 from myo_control import *
 
-#get_android_commands(conn)
-#fuser -vn tcp port
-#sudo kill -9 27635
-
-
 def new_client(client, server):
 	global conn_web
 	conn_web = client
