@@ -1,7 +1,6 @@
 import fuzzy.storage.fcl.Reader
 system = fuzzy.storage.fcl.Reader.Reader().load_from_file("fuzzy_data")
- 
-# preallocate input and output values
+
 my_input = {
         "Distance" : 0.0,
         }
