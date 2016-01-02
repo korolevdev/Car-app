@@ -1,6 +1,6 @@
+#/usr/bin/env python
 import sys
 sys.path.append('/usr/local/lib/python2.7/site-packages')
-#/usr/bin/env python
 import time
 import numpy as np
 import cv2
@@ -62,8 +62,6 @@ def on_turn():
                 right = 0
                 t.turn = 0
                 start_time = time.time()
-        #else:
-           #detect = 0
 ca = threading.Event()
 tca = threading.Thread(target=on_turn, args=())
 tca.do_run = True
