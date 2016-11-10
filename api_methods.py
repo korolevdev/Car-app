@@ -1,4 +1,3 @@
-import MySQLdb
 import socket
 from app import *
 

@@ -1,4 +1,3 @@
-import MySQLdb
 from flask import request
 from app import *
 from wrappers import *
