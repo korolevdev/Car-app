@@ -16,16 +16,16 @@ import serial
 
 def get_command_dest(tmp):
     return {
-               tmp < -0.2: 2,
-          -0.2 <= tmp < 0.2:  0,
-          0.2 <= tmp:       1
+        tmp < -0.2:         2,
+        -0.2 <= tmp < 0.2:  0,
+        0.2 <= tmp:         1
     }[True]
 
 def get_command_turn(tmp):
     return {
-               tmp < -0.3: 4,
-	-0.3 <= tmp < 0.3:  5,
-         0.3 <= tmp:       3
+        tmp < -0.3:         4,
+        -0.3 <= tmp < 0.3:  5,
+        0.3 <= tmp:         3
     }[True]
 
 sock = socket.socket()
@@ -59,7 +59,7 @@ print 'Arduino connected'
 
 def get_distance():
 	return {
-				int(ser.readline())
+		int(ser.readline())
    	}[True]
 
 while True:

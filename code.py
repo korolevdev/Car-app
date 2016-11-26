@@ -4,13 +4,15 @@ import socket
 
 GPIO.setmode(GPIO.BCM)
 
-lb=6 ; rb=19 ; 
-rr=26 ; lr=13
+lb = 6
+rb = 19 
+rr = 26
+lr = 13
 
-GPIO.setup(lb, GPIO.OUT, initial=0)
-GPIO.setup(rb, GPIO.OUT, initial=0)
-GPIO.setup(rr, GPIO.OUT, initial=0)
-GPIO.setup(lr, GPIO.OUT, initial=0)
+GPIO.setup(lb, GPIO.OUT, initial = 0)
+GPIO.setup(rb, GPIO.OUT, initial = 0)
+GPIO.setup(rr, GPIO.OUT, initial = 0)
+GPIO.setup(lr, GPIO.OUT, initial = 0)
 
 GPIO.output(rr, 1)
 GPIO.output(lr, 0)
