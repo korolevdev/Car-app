@@ -1,3 +1,3 @@
-[submodule "android"]
-	path = android
-	url = https://github.com/korolevdev/Car_android
+[submodule "Car_android"]
+	path = Car_android
+	url = https://github.com/korolevdev/Car_android.git
