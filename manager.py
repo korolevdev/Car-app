@@ -71,7 +71,7 @@ def myo_command():
 	myo.run()
 	turn = myo.getRoll()
 	dest = myo.getPitch()
-	speed
+	speed = abs(dest)/1.2 * 100
 	dist, lv, rv = decode(int(ser.readline()))
 	my_input["Distance"] = dist
 	system.calculate(my_input, my_output)
@@ -79,7 +79,7 @@ def myo_command():
 		com = get_command_dest(dest)
 	else
 		com = get_command_turn(turn) 
-	return com, 
+	return encode(com, speed)
 #ls /dev/tty*
 ser = serial.Serial('/dev/ttyACM0', 9600)
 print 'Arduino connected'
