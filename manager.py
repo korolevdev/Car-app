@@ -41,7 +41,7 @@ def get_android_commands(connection):
 		data = conn.recv(1024)
 
 		if data:
-			connection.send(data)
+			connection.send(encode(data, 50))
 
 		conn.close()
 
@@ -63,6 +63,8 @@ sock = socket.socket()
 sock.bind(('', 9093))
 sock.listen(1)
 conn, addr = sock.accept()
+
+get_android_commands(conn)
 
 print 'connected:', addr
 
