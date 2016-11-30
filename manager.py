@@ -24,6 +24,10 @@ my_output = {
 #<0.1 up - команда едем назад
 #>1.2 stop - команда стоим стоит 
 
+def encode(int lv, int rv) {
+  return (unsigned long)lv << 24 | (unsigned long)rv << 16 | 0 & 0xffff;
+}
+
 def get_command_dest(tmp):
     return {
                tmp < -0.2: 2,
