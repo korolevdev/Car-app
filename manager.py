@@ -24,9 +24,9 @@ my_output = {
 #<0.1 up - команда едем назад
 #>1.2 stop - команда стоим стоит 
 
-def encode(int dest, int speed) {
+def encode(dest, speed):
   return int(dest << 24) | int(speed << 16) | 0 & 0xffff;
-}
+
 
 def get_android_commands(connection):
 	sock = socket.socket()
@@ -96,7 +96,7 @@ def myo_command():
 	system.calculate(my_input, my_output)
 	if (get_command_turn(turn) == 5):
 		com = get_command_dest(dest)
-	else
+	else:
 		com = get_command_turn(turn) 
 	return encode(com, speed)
 #ls /dev/tty*
