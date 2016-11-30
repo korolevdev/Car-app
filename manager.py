@@ -24,9 +24,26 @@ my_output = {
 #<0.1 up - команда едем назад
 #>1.2 stop - команда стоим стоит 
 
-def encode(int lv, int rv) {
-  return (unsigned long)lv << 24 | (unsigned long)rv << 16 | 0 & 0xffff;
+def encode(int dest, int speed) {
+  return int(dest << 24) | int(speed << 16) | 0 & 0xffff;
 }
+
+def get_android_commands(connection):
+	sock = socket.socket()
+	sock.bind(('', 9092))
+
+	while True:
+		sock.listen(1)
+		conn, addr = sock.accept()
+
+		print 'connected:', addr
+
+		data = conn.recv(1024)
+
+		if data:
+			connection.send(data)
+
+		conn.close()
 
 def get_command_dest(tmp):
     return {
