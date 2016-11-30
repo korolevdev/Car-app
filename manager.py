@@ -25,7 +25,7 @@ my_output = {
 #>1.2 stop - команда стоим стоит 
 
 def encode(dest, speed):
-  return int(dest << 24) | int(speed << 16) | 0 & 0xffff;
+  return int(dest) << 24 | int(speed) << 16 | 0 & 0xffff;
 
 
 def get_android_commands(connection):
@@ -41,7 +41,7 @@ def get_android_commands(connection):
 		data = conn.recv(1024)
 
 		if data:
-			connection.send(encode(data, 50))
+			connection.send(str(encode(data, 50)))
 
 		conn.close()
 
