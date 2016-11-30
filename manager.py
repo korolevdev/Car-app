@@ -85,8 +85,7 @@ ser = serial.Serial('/dev/ttyACM0', 9600)
 print 'Arduino connected'
 
 while True:
-#	command = 't' + str(get_command_turn(turn)) + 'd' + str(get_command_dest(dest))	
-#	print(command)
+
 	conn.send(com)
 
 conn.close()
