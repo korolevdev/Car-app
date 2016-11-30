@@ -84,21 +84,25 @@ def decode(packet):
         dist = dist - 0x10000
     return dist, lv, rv
 
+def myo_command():
+	myo.run()
+	turn = myo.getRoll()
+	dest = myo.getPitch()
+	speed = abs(dest)/1.2 * 100
+	dist, lv, rv = decode(int(ser.readline()))
+	my_input["Distance"] = dist
+	system.calculate(my_input, my_output)
+	if (get_command_turn(turn) == 5):
+		com = get_command_dest(dest)
+	else
+		com = get_command_turn(turn) 
+	return encode(com, speed)
 #ls /dev/tty*
 ser = serial.Serial('/dev/ttyACM0', 9600)
 print 'Arduino connected'
 
 while True:
-	myo.run()
-	turn = myo.getRoll()
-	dest = myo.getPitch()
-	dist, lv, rv = decode(int(ser.readline()))
-	my_input["Distance"] = dist
-	system.calculate(my_input, my_output)
-	if (get_command_turn(turn) == 5):
-		if (get_command_dest(dest)) 
-	command = 't' + str(get_command_turn(turn)) + 'd' + str(get_command_dest(dest))	
-#	print(command)
-	conn.send(command)
+
+	conn.send(com)
 
 conn.close()
