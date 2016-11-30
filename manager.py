@@ -4,11 +4,21 @@
 from PyoConnect import * 
 import socket
 import serial
+import fuzzy.storage.fcl.Reader
+system = fuzzy.storage.fcl.Reader.Reader().load_from_file("fuzzy_data")
+
+# preallocate input and output values
+my_input = {
+        "Distance" : 0.0,
+        }
+my_output = {
+        "Speed_Correction" : 0.0
+        }
 
 #roll
 #>0.15 hand left - ехать влево
 #<0.15 hand right - ехать вправо
-
+# 1 - up 2- down 3 - left 4 - right 0 - stop
 #pitch
 #>0.1 down - команда едем вперед
 #<0.1 up - команда едем назад
@@ -16,16 +26,16 @@ import serial
 
 def get_command_dest(tmp):
     return {
-        tmp < -0.2:         2,
-        -0.2 <= tmp < 0.2:  0,
-        0.2 <= tmp:         1
+               tmp < -0.2: 2,
+          -0.2 <= tmp < 0.2:  0,
+          0.2 <= tmp:       1
     }[True]
 
 def get_command_turn(tmp):
     return {
-        tmp < -0.3:         4,
-        -0.3 <= tmp < 0.3:  5,
-        0.3 <= tmp:         3
+               tmp < -0.3: 4,
+	-0.3 <= tmp < 0.3:  5,
+         0.3 <= tmp:       3
     }[True]
 
 sock = socket.socket()
@@ -57,18 +67,17 @@ def decode(packet):
 ser = serial.Serial('/dev/ttyACM0', 9600)
 print 'Arduino connected'
 
-def get_distance():
-	return {
-		int(ser.readline())
-   	}[True]
-
 while True:
 	myo.run()
 	turn = myo.getRoll()
 	dest = myo.getPitch()
-	command = 't' + str(get_command_turn(turn)) + 'd' + str(get_command_dest(dest))	
 	dist, lv, rv = decode(int(ser.readline()))
-	print(command)
+	my_input["Distance"] = dist
+	system.calculate(my_input, my_output)
+	if (get_command_turn(turn) == 5):
+		if (get_command_dest(dest)) 
+	command = 't' + str(get_command_turn(turn)) + 'd' + str(get_command_dest(dest))	
+#	print(command)
 	conn.send(command)
 
 conn.close()
