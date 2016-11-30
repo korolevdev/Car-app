@@ -31,7 +31,9 @@ def set_speed(speed):
 	rightb.ChangeDutyCycle(speed)
 
 def parse_command(com):
-	if com == 1:
+	if com == 0:
+		stop()
+	elif com == 1:
 		forward()
 	elif com == 2:
 		backward()
@@ -39,6 +41,12 @@ def parse_command(com):
 		left()
 	elif com == 4:
 		right()
+
+def stop():
+	GPIO.output(rr1, 1)
+	GPIO.output(rr2, 1)
+	GPIO.output(lr1, 1)
+	GPIO.output(lr2, 1)
 
 def left():
 	GPIO.output(rr1, 1)
