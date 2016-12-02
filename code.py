@@ -1,19 +1,8 @@
-import RPi.GPIO as GPIO
+from GPIO_config.py import * 
 import time
 import socket
 
-GPIO.setmode(GPIO.BCM)
-
-lb=20 ; rb=21 ; 
-rr1=13 ; rr2=6;
-lr1=26; lr2=19;
-
-GPIO.setup(lb, GPIO.OUT, initial=0)
-GPIO.setup(rb, GPIO.OUT, initial=0)
-GPIO.setup(rr1, GPIO.OUT, initial=0)
-GPIO.setup(rr2, GPIO.OUT, initial=0)
-GPIO.setup(lr1, GPIO.OUT, initial=0)
-GPIO.setup(lr2, GPIO.OUT, initial=0)
+GPIO_setup()
 
 leftb = GPIO.PWM(lb, 50)
 rightb = GPIO.PWM(rb, 50)
@@ -41,36 +30,6 @@ def parse_command(com):
 		left()
 	elif com == 4:
 		right()
-
-def stop():
-	GPIO.output(rr1, 1)
-	GPIO.output(rr2, 1)
-	GPIO.output(lr1, 1)
-	GPIO.output(lr2, 1)
-
-def left():
-	GPIO.output(rr1, 1)
-	GPIO.output(rr2, 0)
-	GPIO.output(lr1, 0)
-	GPIO.output(lr2, 1)
-
-def right():
-	GPIO.output(rr1, 0)
-	GPIO.output(rr2, 1)
-	GPIO.output(lr1, 1)
-	GPIO.output(lr2, 0)
-
-def forward():
-	GPIO.output(rr1, 0)
-	GPIO.output(rr2, 1)
-	GPIO.output(lr1, 0)
-	GPIO.output(lr2, 1)	
-
-def backward():
-	GPIO.output(rr1, 1)
-	GPIO.output(rr2, 0)
-	GPIO.output(lr1, 1)
-	GPIO.output(lr2, 0)
 
 sock = socket.socket()
 sock.connect(('localhost', 9093))

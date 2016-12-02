@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PyoConnect import * 
+from protocol.py import *
 import socket
 import serial
 import fuzzy.storage.fcl.Reader
