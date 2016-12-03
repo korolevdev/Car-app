@@ -1,0 +1,8 @@
+#ls /dev/tty*
+#udevadm info --name=/dev/ttyUSBx --attribute-walk
+#/etc/udev/rules.d/99-usb-serial.rules
+#SUBSYSTEM=="tty", ATTRS{idVendor}=="1234", ATTRS{idProduct}=="5678", ATTRS{serial}=="85438333036351817231", SYMLINK+="your_device_name"
+#sudo udevadm trigger
+#sudo lsusb -v | more
+#sudo udevadm control --reload
+#sudo shutdown -r now

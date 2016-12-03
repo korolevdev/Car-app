@@ -1,12 +1,16 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import RPi.GPIO as GPIO
 
 lb=20
-lr1=26 lr2=19
+lr1=26; lr2=19
 rb=21 
-rr1=13 rr2=6
+rr1=13; rr2=6
 
 def GPIO_setup():
 	GPIO.setmode(GPIO.BCM)
+	GPIO.setwarnings(False)
 	GPIO.setup(lb, GPIO.OUT, initial=0)
 	GPIO.setup(rb, GPIO.OUT, initial=0)
 	GPIO.setup(rr1, GPIO.OUT, initial=0)

@@ -9,20 +9,7 @@ my_output = {
         "Speed_Correction" : 0.0
         }
  
-i = 400
-
-# if you need only one calculation you do not need the while
-while i > 0:
-    # set input values
-    my_input["Distance"] = i
-
-    # calculate
+def fuzzy_speed_calc(dist):
+    my_input["Distance"] = int(dist)
     system.calculate(my_input, my_output)
-
-    # now use outputs
-    print "X = ", my_output["Speed_Correction"], "i = ", i
-
-	if i > 10:
-		i -= 10
-	else:
-		i -= 1
+    return my_output["Speed_Correction"]
