@@ -3,13 +3,6 @@
 
 from PyoConnect import * 
 
-def myo_connect():
-	myo = Myo(sys.argv[1] if len(sys.argv) >= 2 else None)
-	myo.connect()
-	while (not myo.getGyro()):
-		print('Wait a myo')
-		myo.run()
-
 #roll
 #>0.15 hand left - ехать влево
 #<0.15 hand right - ехать вправо
@@ -33,15 +26,14 @@ def get_command_turn(tmp):
          0.3 <= tmp:       3
     }[True]
 
-def myo_command():
+def myo_command(myo):
 	myo.run()
 	turn = myo.getRoll()
 	dest = myo.getPitch()
 	speed = abs(dest)/1.2 * 100
-	lv, rv, dist = decode(int(ser.readline()))
 	
 	if (get_command_turn(turn) == 5):
 		com = get_command_dest(dest)
 	else:
 		com = get_command_turn(turn) 
-	return encode(com, speed, 0)
+	return com, speed

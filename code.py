@@ -41,8 +41,9 @@ try:
 	while 1:
 		data = sock.recv(1024)
 		dest, speed = decode(int(data))
-		parse_command(dest)
-		set_speed(speed)
+		print dest, speed
+		#parse_command(dest)
+		#set_speed(speed)
 		time.sleep(0.1)
 except Exception,KeyboardInterrupt:
 	sock.close()
