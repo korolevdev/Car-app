@@ -2,3 +2,4 @@
 *.py~
 !PyoConnect.pyc
 !myo_raw.pyc
+!common.pyc
