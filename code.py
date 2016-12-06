@@ -45,7 +45,7 @@ try:
 		#parse_command(dest)
 		#set_speed(speed)
 		time.sleep(0.1)
-except Exception,KeyboardInterrupt:
+except Exception, KeyboardInterrupt:
 	sock.close()
 	leftb.stop()
 	rightb.stop()

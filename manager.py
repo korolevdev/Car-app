@@ -43,16 +43,14 @@ try:
 	motors = motors_connect()
 	print 'Motors driver successfully connected'
 except Exception, e:
-	print 'Failed to connect with motors driver'
+	print 'Failed to connect with motors driver',e
 	#arduino.close()
 
 try:
 	print 'Try to connect with android'
 	android = android_connect()
-	data = android.recv(1024)
-	print 'Android successfully connected'
 except Exception, e:
-	print 'Failed to connect with android'
+	print 'Failed to connect with android',e
 	#arduino.close()	
 
 try:
@@ -60,7 +58,7 @@ try:
 	myo = myo_connect()
 	print 'MYO successfully connected'
 except Exception, e:
-	print 'Failed to connect with MYO'
+	print 'Failed to connect with MYO',e
 	#arduino.close()	
 
 def check_int(str):
@@ -86,10 +84,9 @@ try:
 	
 		data = android.recv(1024)
 		if data:
-			dest, speed, myo_st = decode(int(data))
-			speed = speed*fuzzy_speed_calc(dist)
-			motors.send(str(encode(data,50,0)))
-			print 'motor send'
+			#dest, speed, myo_st = decode(int(data))
+			#speed = speed*fuzzy_speed_calc(dist)
+			#motors.send(str(encode(data,50,0)))
 except KeyboardInterrupt:
 	arduino.close()
 	android.close()

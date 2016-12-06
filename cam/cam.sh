@@ -1,7 +1,7 @@
 #!/bin/bash
 
 VIDEO_DEV="/dev/video0"
-FRAME_RATE="20"
+FRAME_RATE="60"
 RESOLUTION="240x320"
 PORT="8081"
 YUV="true"
