@@ -48,10 +48,6 @@ def backward():
 	GPIO.output(lr1, 1)
 	GPIO.output(lr2, 0)
 
-def set_speed(speed, leftb, rightb):
-	leftb.ChangeDutyCycle(speed)
-	rightb.ChangeDutyCycle(speed)
-
 def parse_command(com):
 	if com == 0:
 		stop()

@@ -103,7 +103,6 @@ try:
 				if (dest == 1):
 					speed = speed*fuzzy_speed_calc(dist) 
 			if speed in range(101):
-				#set_speed(speed, leftb, rightb)
 				leftb.ChangeDutyCycle(speed)
 				rightb.ChangeDutyCycle(speed)
 
