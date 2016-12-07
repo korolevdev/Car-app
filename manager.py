@@ -3,10 +3,13 @@
 from protocol import encode,decode
 from myo_control import *
 from fuzzy_logic import *
+from GPIO_control import *
 import socket
 import serial
 
 #get_android_commands(conn)
+#fuser -vn tcp port
+#sudo kill -9 27635
 
 def motors_connect():
 	sock = socket.socket()
@@ -34,29 +37,37 @@ try:
 	print 'Try to connect with Arduino'
 	arduino = serial.Serial('/dev/arduino', 9600)
 	arduino.readline()
-	print 'Arduino successfully connected'
+	print 'Success'
 except Exception, e:
 	print 'Failed to connect with Arduino'
 
 try:
-	print 'Try to connect with motors driver'
-	motors = motors_connect()
-	print 'Motors driver successfully connected'
+	print 'Try to setup motors'
+	GPIO_setup()
+
+	leftb = GPIO.PWM(lb, 50)
+	rightb = GPIO.PWM(rb, 50)
+
+	leftb.start(0)
+	rightb.start(0)
+	print 'Success'
 except Exception, e:
-	print 'Failed to connect with motors driver',e
+	print 'Failed to setup motors',e
 	#arduino.close()
 
+
+'''
 try:
 	print 'Try to connect with android'
 	android = android_connect()
 except Exception, e:
 	print 'Failed to connect with android',e
 	#arduino.close()	
-
+'''
 try:
 	print 'Try to connect with MYO'
 	myo = myo_connect()
-	print 'MYO successfully connected'
+	print 'Success'
 except Exception, e:
 	print 'Failed to connect with MYO',e
 	#arduino.close()	
@@ -69,26 +80,42 @@ def check_int(str):
         return False
 
 myo_st = False
+
 try:
 	while True:
 		s = arduino.readline()
 		if check_int(s):
-			data = int(s)
-			lv, rv, dist = decode(data)
-		
-		if myo_st:	
-			com, speed = myo_command(myo)
-			speed = speed*fuzzy_speed_calc(dist)
-			data = encode(com,speed,0)
-			motors.send(str(data)) 
-	
-		data = android.recv(1024)
+			lv, rv, dist = decode(int(s))
+		'''
+		data = android.recv(8).strip('\0')
 		if data:
-			#dest, speed, myo_st = decode(int(data))
-			#speed = speed*fuzzy_speed_calc(dist)
-			#motors.send(str(encode(data,50,0)))
+			dest, speed, myo_st = decode(long(data))
+			print dest, speed, myo_st
+			speed = fuzzy_speed_calc(dist)
+			motors.send(str(encode(dest,speed,0)))
+		'''
+
+		if myo_st:	
+			dest, speed = myo_command(myo) 
+
+			if dest in range(5):
+				parse_command(dest)
+				if (dest == 1):
+					speed = speed*fuzzy_speed_calc(dist) 
+			if speed in range(101):
+				#set_speed(speed, leftb, rightb)
+				leftb.ChangeDutyCycle(speed)
+				rightb.ChangeDutyCycle(speed)
+
+		parse_command(1)
+		speed = fuzzy_speed_calc(dist) 
+		leftb.ChangeDutyCycle(speed)
+		rightb.ChangeDutyCycle(speed)		
+		#time.sleep(0.1)
 except KeyboardInterrupt:
 	arduino.close()
 	android.close()
-	motors.close()
+	leftb.stop()
+	rightb.stop()
+	GPIO.cleanup()
 	print 'bad'

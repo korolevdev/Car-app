@@ -9,9 +9,9 @@ FUNCTION_BLOCK dummy
     END_VAR
  
     FUZZIFY Distance
-        TERM Very_Close := (0, 1) (5, 1) (10, 0) ;
-        TERM Close := (8, 0) (10, 1) (20, 1) (50, 0) ;
-        TERM Medium := (20, 0) (30, 1) (70, 1) (90, 0);
+        TERM Very_Close := (0, 1) (5, 1) (20, 0) ;
+        TERM Close := (8, 0) (10, 1) (40, 1) (70, 0) ;
+        TERM Medium := (20, 0) (30, 1) (70, 1) (140, 0);
         TERM Far := (70, 0) (90, 1) (140, 1) (220, 0);
         TERM Very_Far := (140, 0) (170, 1) (700, 1) ;
     END_FUZZIFY

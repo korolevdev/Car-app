@@ -32,7 +32,7 @@ def test3_get_command_dest():
 
 def test1_get_command_turn():
 	tmp = -0.5
-	comm = get_command_dest(tmp)
+	comm = get_command_turn(tmp)
 	if (comm == 3):
 		print("Left|OK")
 	else:
@@ -40,7 +40,7 @@ def test1_get_command_turn():
 
 def test2_get_command_turn():
 	tmp = 0
-	comm = get_command_dest(tmp)
+	comm = get_command_turn(tmp)
 	if (comm == 5):
 		print("Toward|OK")
 	else:
@@ -48,7 +48,7 @@ def test2_get_command_turn():
 
 def test3_get_command_turn():
 	tmp = 0.5
-	comm = get_command_dest(tmp)
+	comm = get_command_turn(tmp)
 	if (comm == 4):
 		print("Right|OK")
 	else:
@@ -64,3 +64,4 @@ def test_myo_control():
 	test2_get_command_turn()
 	test3_get_command_turn()
 	
+test_myo_control()

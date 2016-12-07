@@ -47,3 +47,19 @@ def backward():
 	GPIO.output(rr2, 0)
 	GPIO.output(lr1, 1)
 	GPIO.output(lr2, 0)
+
+def set_speed(speed, leftb, rightb):
+	leftb.ChangeDutyCycle(speed)
+	rightb.ChangeDutyCycle(speed)
+
+def parse_command(com):
+	if com == 0:
+		stop()
+	elif com == 1:
+		forward()
+	elif com == 2:
+		backward()
+	elif com == 3:
+		left()
+	elif com == 4:
+		right()

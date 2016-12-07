@@ -14,26 +14,39 @@ from PyoConnect import *
 
 def get_command_dest(tmp):
     return {
-               tmp < -0.2: 2,
-          -0.2 <= tmp < 0.2:  0,
+               tmp < 0: 2,
+          0 <= tmp < 0.2:  0,
           0.2 <= tmp:       1
     }[True]
 
 def get_command_turn(tmp):
     return {
-               tmp < -0.3: 4,
-	-0.3 <= tmp < 0.3:  5,
-         0.3 <= tmp:       3
+               tmp < -0.4: 4,
+	-0.4 <= tmp < 0.4:  5,
+         0.4 <= tmp:       3
     }[True]
 
 def myo_command(myo):
-	myo.run()
-	turn = myo.getRoll()
-	dest = myo.getPitch()
-	speed = abs(dest)/1.2 * 100
-	
-	if (get_command_turn(turn) == 5):
-		com = get_command_dest(dest)
-	else:
-		com = get_command_turn(turn) 
-	return com, speed
+    myo.run()
+    turn = myo.getRoll()
+    dest = myo.getPitch()
+    #speed of forward/backwad moving
+    speed_d = int(abs(dest)/0.6 * 100)
+    if (speed_d > 100):
+        speed_d = 100
+    if (speed_d < 20):
+        speed_d = 20
+    #speed of rotation
+    speed_t = int(abs(turn)/0.6 * 100)
+    if (speed_t > 100):
+        speed_t = 100
+    if (speed_t < 40):
+        speed_t = 40
+    
+    if (get_command_turn(turn) == 5):
+        com = get_command_dest(dest)
+        speed = speed_d
+    else:
+        com = get_command_turn(turn)
+        speed = speed_t
+    return com, speed
