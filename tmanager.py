@@ -25,8 +25,7 @@ def android_connect():
     sock.bind(('', 9092))
     sock.listen(1)
     conn, addr = sock.accept()
-    conn.setblocking(0)
-    #conn.settimeout(0.2)
+    #conn.setblocking(0)
     return conn
 
 def myo_connect():
@@ -66,14 +65,14 @@ try:
 except Exception, e:
     print 'Failed to connect with android',e
     #arduino.close()    
-'''
+
 try:
     print 'Try to connect with android'
     android = android_connect()
 except Exception, e:
     print 'Failed to connect with android',e
     #arduino.close()    
-'''
+
 def check_int(str):
     try:
         int(str)
@@ -89,67 +88,70 @@ speed = 0
 myo_st = 1
 
 def arduino_read(n, event_for_wait, event_for_set):
+    #event_for_wait.wait() # wait for event
+    #event_for_wait.clear() # clean event for future
     while 1:
-        event_for_wait.wait() # wait for event
-        event_for_wait.clear() # clean event for future
         s = arduino.readline()
         if s and check_int(s):
             lv, rv, dist = decode(int(s))
             print 'arduino: ',lv,' ',rv,' ',dist
-            arduino.flushInput()
-            arduino.flushOutput()
-        event_for_set.set() # set event for neighbor thread
+    #event_for_set.set() # set event for neighbor thread
 
 def android_read(n, event_for_wait, event_for_set):
+    #event_for_wait.wait() # wait for event
+    #event_for_wait.clear() # clean event for future    
     while 1:  
-        event_for_wait.wait()
-        event_for_wait.clear()
-        try:
-            data = android.recv(1024)       
+        do_read = False 
+	try: 
+	    r, _, _ = select.select([android], [], []) 
+            do_read = bool(r) 
+        except socket.error: 
+            pass 
+        if do_read: 
+            data = adnroid.recv(1024) 
+            print "Got data: ", data 
+            #android.settimeout(0)
+            #data = android.recv(8)       
             if data:
                 data = data.strip('\0')
                 dest, speed, myo_st = decode(long(data))
                 print 'android: ',dest,' ',speed,' ',myo_st
-        except IOError as e:  # and here it is handeled
-            if e.errno == errno.EWOULDBLOCK:
-                pass
-        event_for_set.set()    
-
-def myo_read(n, event_for_wait, event_for_set):
-    while 1:  
-        event_for_wait.wait()
-        event_for_wait.clear()
-        if myo_st:
-            dest, speed = myo_command(myo)
-            print 'myo: ',dest,' ',speed
-        event_for_set.set()   
-
+     #event_for_set.set() # set event for neighbor thread
+        
 # init events
-my = threading.Event()
-ar = threading.Event()
-#an = threading.Event()
+#my = threading.Event()
+#ar = threading.Event()
+an = threading.Event()
 
 
 # init threads
-tmy = threading.Thread(target=myo_read, args=(0, my, ar))
-tar = threading.Thread(target=arduino_read, args=(1, ar, my))
-#tan = threading.Thread(target=android_read, args=(2, an, my))
-
+#tmy = threading.Thread(target=myo_read, args=(0, my, ar))
+#tar = threading.Thread(target=arduino_read, args=(1, ar, ar))
+tan = threading.Thread(target=android_read, args=(0, an, an))
 
 # start threads
-tmy.start()
-tar.start()
-#tan.start()
+#tmy.start()
+#tar.start()
+tan.start()
 
-
-my.set() # initiate the first event
-
+#an.set() # initiate the first event
+#ar.set()
+an.set()
 # join threads to the main thread
-tmy.join()
-tar.join()
-#tan.join()
-'''
+#tmy.join()
+#ar.join()
+#an.join()
+
 while 1:
+    #if myo_st:
+    try:
+        dest, speed = myo_command(myo)
+        print 'myo: ',dest,' ',speed
+    except:
+        True
+        print 'bad'
+    #print '1'
+'''
     if dest in range(5):
         parse_command(dest)
     if (dest == 1):
