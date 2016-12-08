@@ -54,22 +54,20 @@ try:
 except Exception, e:
 	print 'Failed to setup motors',e
 	#arduino.close()
-
-
 '''
+try:
+	print 'Try to connect with android'
+	myo = myo_connect()
+except Exception, e:
+	print 'Failed to connect with android',e
+	#arduino.close()	
+'''
+
 try:
 	print 'Try to connect with android'
 	android = android_connect()
 except Exception, e:
 	print 'Failed to connect with android',e
-	#arduino.close()	
-'''
-try:
-	print 'Try to connect with MYO'
-	myo = myo_connect()
-	print 'Success'
-except Exception, e:
-	print 'Failed to connect with MYO',e
 	#arduino.close()	
 
 def check_int(str):
@@ -83,37 +81,35 @@ myo_st = False
 
 try:
 	while True:
-		s = arduino.readline()
-		if check_int(s):
-			lv, rv, dist = decode(int(s))
-		'''
-		data = android.recv(8).strip('\0')
+		
+		if arduino.inWaiting():
+			s = arduino.readline()
+			if s and check_int(s):
+				lv, rv, dist = decode(int(s))
+				print dist
+
+		print'do'
+		data = android.recv(1024).strip('\0')
 		if data:
 			dest, speed, myo_st = decode(long(data))
-			print dest, speed, myo_st
-			speed = fuzzy_speed_calc(dist)
-			motors.send(str(encode(dest,speed,0)))
+		print'posle'
 		'''
-
-		if myo_st:	
-			dest, speed = myo_command(myo) 
-
-			if dest in range(5):
-				parse_command(dest)
-				if (dest == 1):
-					speed = speed*fuzzy_speed_calc(dist) 
-			if speed in range(101):
-				leftb.ChangeDutyCycle(speed)
-				rightb.ChangeDutyCycle(speed)
-
-		parse_command(1)
-		speed = fuzzy_speed_calc(dist) 
-		leftb.ChangeDutyCycle(speed)
-		rightb.ChangeDutyCycle(speed)		
+		if myo_st:
+			dest, speed = myo_command(myo)
+			print dest,' ',speed
+		
+		if dest in range(5):
+			parse_command(dest)
+		if (dest == 1):
+			speed = speed#*fuzzy_speed_calc(dist) 
+		if speed in range(101):
+			leftb.ChangeDutyCycle(speed)
+			rightb.ChangeDutyCycle(speed)
+		'''		
 		#time.sleep(0.1)
 except KeyboardInterrupt:
-	arduino.close()
 	android.close()
+	#arduino.close()
 	leftb.stop()
 	rightb.stop()
 	GPIO.cleanup()

@@ -28,6 +28,7 @@ def get_command_turn(tmp):
 
 def myo_command(myo):
     myo.run()
+    myo.tick()
     turn = myo.getRoll()
     dest = myo.getPitch()
     #speed of forward/backwad moving
