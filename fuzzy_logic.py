@@ -12,4 +12,4 @@ my_output = {
 def fuzzy_speed_calc(dist):
     my_input["Distance"] = int(dist)
     system.calculate(my_input, my_output)
-    return my_output["Speed_Correction"]
+    return my_output["Speed_Correction"]/100

@@ -22,18 +22,21 @@ speed = 0
 global myo_st
 myo_st = 0
 conn_web = 0
+server = 0
 
 def new_client(client, server):
-	global conn
+	global conn_web
 	conn_web = client
 
 def run_socket():
+	global server
 	server.run_forever()
 
+def send_web(dest, speed):
+	global server
+	server.send_message(conn_web, '{"real_speed":"' + str(speed) + '","route":' + str(dest) + ',"teor_speed":"50"}')
+	
 def motors_set(dest, speed):
-
-	server.send_message(conn_web, '{"real_speed":"' + (str) speed + '","route":' + dest + ',"teor_speed":"50"}')
-
     if dest in range(5):
         parse_command(dest)
     if (dest == 1):
@@ -139,8 +142,8 @@ except Exception, e:
     print 'Failed ',e  
 
 try:
-    print 'Try to connect with web'
-    server = WebsocketServer(8082, host='127.0.0.1')
+    	print 'Try to connect with web'
+   	server = WebsocketServer(8082, host='0.0.0.0')
 	client = server.set_fn_new_client(new_client)
 	       
 	asocket = threading.Event()
@@ -152,6 +155,7 @@ try:
 	asocket.set()
 
 	while conn_web == 0:
+		print "wait"
 		time.sleep(1)
 	print 'Succes'
 except Exception, e:
@@ -183,6 +187,8 @@ def on_arduino():
         s = arduino.readline()
         if s and check_int(s):
             lv, rv, dist = decode(int(s))
+            if conn_web != 0:
+	    	send_web(lv, 1)
             print 'arduino: ',lv,' ',rv,' ',dist
 
 def on_myo():
@@ -218,7 +224,8 @@ try:
         if data:
             dest, speed, myo_st = decode(int(data))
             if myo_st == 0:
-                motors_set(dest, speed)
+		send_web(data, speed)
+               # motors_set(dest, speed)
                 print("android: ",dest, " ", speed," ", myo_st)
 except KeyboardInterrupt:
     pass
