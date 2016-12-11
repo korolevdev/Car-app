@@ -4,6 +4,7 @@
 import threading
 import socket
 import serial
+from websocket_server import WebsocketServer
 from utils import encode, decode
 from myo_control import *
 from fuzzy_logic import *
@@ -20,8 +21,19 @@ dest = 0
 speed = 0
 global myo_st
 myo_st = 0
+conn_web = 0
+
+def new_client(client, server):
+	global conn
+	conn_web = client
+
+def run_socket():
+	server.run_forever()
 
 def motors_set(dest, speed):
+
+	server.send_message(conn_web, '{"real_speed":"' + (str) speed + '","route":' + dest + ',"teor_speed":"50"}')
+
     if dest in range(5):
         parse_command(dest)
     if (dest == 1):
@@ -44,13 +56,13 @@ def proc_imu(quat, acc, gyro, times=[]):
         yaw = -math.atan2(2.0 * (q0 * q3 + q1 * q2), 1.0 - 2.0 * (q2 * q2 + q3 * q3))
 
         #speed of forward/backwad moving
-        speed_d = int(abs(roll)/0.6 * 100)
+        speed_d = int(abs(pitch)/0.6 * 100)
         if (speed_d > 100):
             speed_d = 100
         if (speed_d < 20):
             speed_d = 20
         #speed of rotation
-        speed_t = int(abs(pitch)/0.6 * 100)
+        speed_t = int(abs(roll)/0.6 * 100)
         if (speed_t > 100):
             speed_t = 100
         if (speed_t < 40):
@@ -127,11 +139,28 @@ except Exception, e:
     print 'Failed ',e  
 
 try:
+    print 'Try to connect with web'
+    server = WebsocketServer(8082, host='127.0.0.1')
+	client = server.set_fn_new_client(new_client)
+	       
+	asocket = threading.Event()
+
+	tasocket = threading.Thread(target=run_socket, args=())
+
+	tasocket.start()
+
+	asocket.set()
+
+	while conn_web == 0:
+		time.sleep(1)
+	print 'Succes'
+except Exception, e:
+    print 'Failed',e
+try:
     print 'Try to connect with android'
     android = android_connect()
 except Exception, e:
     print 'Failed',e
-    android.close()
     arduino.close()
 
 try:
