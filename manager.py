@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import threading
 import socket
 import serial
@@ -19,22 +18,23 @@ rv = 0
 dist = 100
 dest = 0
 speed = 0
-global myo_st
+myo_st = 0
 myo_st = 0
 conn_web = 0
-server = 0
+web = 0
 
 def new_client(client, server):
 	global conn_web
 	conn_web = client
 
 def run_socket():
-	global server
-	server.run_forever()
+	global web
+	web.run_forever()
 
 def send_web(dest, speed):
-	global server
-	server.send_message(conn_web, '{"real_speed":"' + str(speed) + '","route":' + str(dest) + ',"teor_speed":"50"}')
+	global web
+    if conn_web != 0 :
+	   web.send_message(conn_web, '{"real_speed":"' + str(speed) + '","route":' + str(dest) + ',"teor_speed":"50"}')
 	
 def motors_set(dest, speed):
     if dest in range(5):
@@ -88,6 +88,7 @@ def proc_imu(quat, acc, gyro, times=[]):
 
 def proc_pose(p, times=[]):
     global myo_st
+    
     if p == Pose.DOUBLE_TAP:
         if myo_st == 2:
             myo_st = 1
@@ -168,27 +169,17 @@ except Exception, e:
     print 'Failed ',e  
 
 try:
-    	print 'Try to connect with web'
+    print 'Try to connect with web'
    	server = WebsocketServer(8082, host='0.0.0.0')
 	client = server.set_fn_new_client(new_client)
-	       
-	asocket = threading.Event()
-
-	tasocket = threading.Thread(target=run_socket, args=())
-
-	tasocket.start()
-
-	asocket.set()
-
-	while conn_web == 0:
-		print "wait"
-		time.sleep(1)
 	print 'Succes'
 except Exception, e:
     print 'Failed',e
+
 try:
     print 'Try to connect with android'
     android = android_connect()
+    print 'Succes'
 except Exception, e:
     print 'Failed',e
     arduino.close()
@@ -201,16 +192,19 @@ except Exception, e:
     android.close()
     arduino.close()     
         
+aw = threading.Event()
 ar = threading.Event()
 my = threading.Event()
 
-
+taw = threading.Thread(target=run_socket, args=())
 tar = threading.Thread(target=on_arduino, args=())
 tmy = threading.Thread(target=on_myo, args=())
 
+taw.start()
 tar.start()
 tmy.start()
 
+aw.set()
 ar.set()
 my.set()
 
