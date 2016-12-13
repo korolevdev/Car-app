@@ -16,14 +16,14 @@ import time
 
 def get_myo_dest(tmp):
     return {
-               tmp < 0: 2,
-          0 <= tmp < 0.2:  0,
-          0.2 <= tmp:       1
+                 tmp < 0:    2,
+          0   <= tmp < 0.2:  0,
+          0.2 <= tmp:        1
     }[True]
 
 def get_myo_turn(tmp):
     return {
-               tmp < -0.4: 4,
-  -0.4 <= tmp < 0.4:  5,
-         0.4 <= tmp:       3
+                tmp < -0.4: 4,
+        -0.4 <= tmp < 0.4:  5,
+         0.4 <= tmp:        3
     }[True]
