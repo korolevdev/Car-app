@@ -120,6 +120,32 @@ def android_connect():
     conn, addr = sock.accept()
     return conn
 
+def check_int(str):
+    try:
+        int(str)
+        return True
+    except:
+        return False
+
+def on_arduino():
+    while 1:
+        s = arduino.readline()
+        if s and check_int(s):
+            lv, rv, dist = decode(int(s))
+            if conn_web != 0:
+            send_web(lv, 1)
+            print 'arduino: ',lv,' ',rv,' ',dist
+
+def on_myo():
+    try:
+        while True:
+            myo.run(1)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        myo.disconnect()
+        print()
+
 try:
     print 'Try to connect with Arduino'
     arduino = serial.Serial('/dev/arduino', 9600)
@@ -174,32 +200,6 @@ except Exception, e:
     print 'Failed ',e
     android.close()
     arduino.close()     
-
-def check_int(str):
-    try:
-        int(str)
-        return True
-    except:
-        return False
-
-def on_arduino():
-    while 1:
-        s = arduino.readline()
-        if s and check_int(s):
-            lv, rv, dist = decode(int(s))
-            if conn_web != 0:
-	    	send_web(lv, 1)
-            print 'arduino: ',lv,' ',rv,' ',dist
-
-def on_myo():
-    try:
-        while True:
-            myo.run(1)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        myo.disconnect()
-        print()
         
 ar = threading.Event()
 my = threading.Event()
@@ -214,10 +214,6 @@ tmy.start()
 ar.set()
 my.set()
 
-# join threads to the main thread
-#tmy.join()
-#ar.join()
-#an.join()
 try:
     while 1:
         data = android.recv(1024)  

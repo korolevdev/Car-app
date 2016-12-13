@@ -6,6 +6,4 @@ def decode(packet):
 	b = (packet >> 16) & 0xff
 	c = packet & 0xffff
 
-	#if c & 0x8000:
-	#	c = c - 0x10000
 	return a, b, c
