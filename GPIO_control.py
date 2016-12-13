@@ -3,20 +3,23 @@
 
 import RPi.GPIO as GPIO
 
-lb=20
-lr1=26; lr2=19
-rb=21 
-rr1=13; rr2=6
+lb = 20
+lr1 = 26
+lr2 = 19
+
+rb = 21 
+rr1 = 13 
+rr2 = 6
 
 def GPIO_setup():
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setwarnings(False)
-	GPIO.setup(lb, GPIO.OUT, initial=0)
-	GPIO.setup(rb, GPIO.OUT, initial=0)
-	GPIO.setup(rr1, GPIO.OUT, initial=0)
-	GPIO.setup(rr2, GPIO.OUT, initial=0)
-	GPIO.setup(lr1, GPIO.OUT, initial=0)
-	GPIO.setup(lr2, GPIO.OUT, initial=0)
+	GPIO.setup(lb, GPIO.OUT, initial = 0)
+	GPIO.setup(rb, GPIO.OUT, initial = 0)
+	GPIO.setup(rr1, GPIO.OUT, initial = 0)
+	GPIO.setup(rr2, GPIO.OUT, initial = 0)
+	GPIO.setup(lr1, GPIO.OUT, initial = 0)
+	GPIO.setup(lr2, GPIO.OUT, initial = 0)
 
 def stop():
 	GPIO.output(rr1, 1)
@@ -49,13 +52,13 @@ def backward():
 	GPIO.output(lr2, 0)
 
 def parse_command(com):
-	if com == 0:
+	if com  ==  0:
 		stop()
-	elif com == 1:
+	elif com  ==  1:
 		forward()
-	elif com == 2:
+	elif com  ==  2:
 		backward()
-	elif com == 3:
+	elif com  ==  3:
 		left()
-	elif com == 4:
+	elif com  ==  4:
 		right()
