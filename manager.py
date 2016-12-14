@@ -24,18 +24,18 @@ conn_web = 0
 web = 0
 
 def new_client(client, server):
-	global conn_web
-	conn_web = client
+    global conn_web
+    conn_web = client
 
 def run_socket():
-	global web
-	web.run_forever()
+    global web
+    web.run_forever()
 
 def send_web(dest, speed):
-	global web
+    global web
     if conn_web != 0 :
-	   web.send_message(conn_web, '{"real_speed":"' + str(speed) + '","route":' + str(dest) + ',"teor_speed":"50"}')
-	
+       web.send_message(conn_web, '{"real_speed":"' + str(speed) + '","route":' + str(dest) + ',"teor_speed":"50"}')
+    
 def motors_set(dest, speed):
     if dest in range(5):
         parse_command(dest)
@@ -52,18 +52,8 @@ def proc_imu(quat, acc, gyro, times=[]):
         roll = get_roll(quat)
         pitch = get_pitch(quat)
 
-        #speed of forward/backwad moving
-        speed_d = int(abs(pitch)/0.6 * 100)
-        if (speed_d > 100):
-            speed_d = 100
-        if (speed_d < 20):
-            speed_d = 20
-        #speed of rotation
-        speed_t = int(abs(roll)/0.6 * 100)
-        if (speed_t > 100):
-            speed_t = 100
-        if (speed_t < 40):
-            speed_t = 40
+        speed_d = speed_setting(pitch, 20, 100)
+        speed_t = speed_setting(roll, 40, 100)
          
         if (get_myo_turn(roll) == 5):
             com = get_myo_dest(pitch)
@@ -71,14 +61,8 @@ def proc_imu(quat, acc, gyro, times=[]):
         else:
             com = get_myo_turn(roll)
             speed = speed_t
-
-        print (com,' ', speed)
+            
         motors_set(com, speed)
-        ## print framerate of received data
-        times.append(time.time())
-        if len(times) > 20:
-            #print((len(times) - 1) / (times[-1] - times[0]))
-            times.pop(0)     
 
 def proc_pose(p, times=[]):
     global myo_st
@@ -164,9 +148,9 @@ except Exception, e:
 
 try:
     print 'Try to connect with web'
-   	server = WebsocketServer(8082, host='0.0.0.0')
-	client = server.set_fn_new_client(new_client)
-	print 'Succes'
+    server = WebsocketServer(8082, host='0.0.0.0')
+    client = server.set_fn_new_client(new_client)
+    print 'Succes'
 except Exception, e:
     print 'Failed',e
 
@@ -184,7 +168,7 @@ try:
 except Exception, e:
     print 'Failed ',e
     android.close()
-    arduino.close()     
+    arduino.close()  
         
 aw = threading.Event()
 ar = threading.Event()
@@ -208,7 +192,7 @@ try:
         if data:
             dest, speed, myo_st = decode(int(data))
             if myo_st == 0:
-		send_web(data, speed)
+       send_web(data, speed)
                # motors_set(dest, speed)
                 print("android: ",dest, " ", speed," ", myo_st)
 except KeyboardInterrupt:
