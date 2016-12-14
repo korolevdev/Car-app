@@ -32,7 +32,7 @@ def run_socket():
     web.run_forever()
 
 def send_web(dest, speed):
-    global web
+    global web, conn_web
     if conn_web != 0 :
        web.send_message(conn_web, perform_json(speed, dest, speed))
     
@@ -105,7 +105,7 @@ def on_arduino():
         if s and check_int(s):
             lv, rv, dist = decode(int(s))
             if conn_web != 0:
-            send_web(lv, 1)
+                send_web(lv, 1)
             print 'arduino: ',lv,' ',rv,' ',dist
 
 def on_myo():
