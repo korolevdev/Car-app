@@ -19,7 +19,6 @@ dist = 100
 dest = 0
 speed = 0
 myo_st = 0
-myo_st = 0
 conn_web = 0
 web = 0
 
