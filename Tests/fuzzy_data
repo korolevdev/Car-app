@@ -1,0 +1,40 @@
+FUNCTION_BLOCK dummy
+ 
+    VAR_INPUT
+        Distance :     REAL; (* RANGE(0 .. 100) *)
+    END_VAR
+ 
+    VAR_OUTPUT
+        Speed_Correction : REAL; (* RANGE(0 .. 4) *)
+    END_VAR
+ 
+    FUZZIFY Distance
+        TERM Very_Close := (0, 1) (5, 1) (20, 0) ;
+        TERM Close := (8, 0) (10, 1) (40, 1) (70, 0) ;
+        TERM Medium := (20, 0) (30, 1) (70, 1) (140, 0);
+        TERM Far := (70, 0) (90, 1) (140, 1) (220, 0);
+        TERM Very_Far := (140, 0) (170, 1) (700, 1) ;
+    END_FUZZIFY
+ 
+    DEFUZZIFY Speed_Correction
+        TERM Tiny := 100 ;
+        TERM Small := 80 ;
+        TERM Medium := 50 ;
+	TERM Big := 20 ;
+	TERM Huge := 0 ;
+        ACCU:MAX;
+        METHOD: COGS;(*MoM;*)
+        DEFAULT := 0; 
+    END_DEFUZZIFY
+ 
+    RULEBLOCK first
+        AND:MIN;
+        (*ACCU:MAX;*)
+        RULE 0: IF (Distance IS Very_Close) THEN (Speed_Correction IS Huge);
+        RULE 1: IF (Distance IS Close) THEN (Speed_Correction IS Big);
+        RULE 2: IF (Distance IS Medium) THEN (Speed_Correction IS Medium);
+        RULE 3: IF (Distance IS Far) THEN (Speed_Correction IS Small);
+        RULE 4: IF (Distance IS Very_Far) THEN (Speed_Correction IS Tiny);
+    END_RULEBLOCK
+ 
+END_FUNCTION_BLOCK
