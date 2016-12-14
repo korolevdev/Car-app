@@ -4,7 +4,7 @@ import threading
 import socket
 import serial
 from websocket_server import WebsocketServer
-from utils import encode, decode
+from utils import *
 from myo_control import *
 from fuzzy_logic import *
 from GPIO_control import *
@@ -49,14 +49,8 @@ def proc_imu(quat, acc, gyro, times=[]):
     global myo_st
 
     if myo_st == 1:
-        q0, q1, q2, q3 = quat
-        q0 = q0 / 16384.0
-        q1 = q1 / 16384.0
-        q2 = q2 / 16384.0
-        q3 = q3 / 16384.0
-        roll = math.atan2(2.0 * (q0 * q1 + q2 * q3), 1.0 - 2.0 * (q1 * q1 + q2 * q2))
-        pitch = -math.asin(max(-1.0, min(1.0, 2.0 * (q0 * q2 - q3 * q1))))
-        yaw = -math.atan2(2.0 * (q0 * q3 + q1 * q2), 1.0 - 2.0 * (q2 * q2 + q3 * q3))
+        roll = get_roll(quat)
+        pitch = get_pitch(quat)
 
         #speed of forward/backwad moving
         speed_d = int(abs(pitch)/0.6 * 100)
@@ -88,7 +82,7 @@ def proc_imu(quat, acc, gyro, times=[]):
 
 def proc_pose(p, times=[]):
     global myo_st
-    
+
     if p == Pose.DOUBLE_TAP:
         if myo_st == 2:
             myo_st = 1
