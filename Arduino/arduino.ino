@@ -69,10 +69,14 @@ void loop()
     timer = millis();
   }
   int data[3];
-  data[0] = getMeasurement();
-  data[1] = lastSpeed[LEFT];
-  data[2] = lastSpeed[RIGHT]; 
-  Serial.println(encode(data[1], data[2], data[0]));
+  new_dist = getMeasurement();
+  if ((abs(data[0] - new_dist) > 1) || (data[1] != lastSpeed[LEFT])  || (data[2] != lastSpeed[RIGHT]))
+  {
+    data[0] = getMeasurement();
+    data[1] = lastSpeed[LEFT];
+    data[2] = lastSpeed[RIGHT]; 
+    Serial.println(encode(data[1], data[2], data[0]));
+  }
 }
 
 unsigned long encode(byte lv, byte rv, int dist) {
