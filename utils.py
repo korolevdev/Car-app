@@ -7,3 +7,13 @@ def decode(packet):
 	c = packet & 0xffff
 
 	return a, b, c
+
+def check_int(str):
+    try:
+        int(str)
+        return True
+    except:
+        return False
+
+def perform_json(real_speed, route, teor_speed):
+	return '{"real_speed":"' + str(real_speed) + '","route":' + str(route) + ',"teor_speed":"' + str(teor_speed) + '"}'

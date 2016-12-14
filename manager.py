@@ -34,7 +34,7 @@ def run_socket():
 def send_web(dest, speed):
     global web
     if conn_web != 0 :
-       web.send_message(conn_web, '{"real_speed":"' + str(speed) + '","route":' + str(dest) + ',"teor_speed":"50"}')
+       web.send_message(conn_web, perform_json(speed, dest, speed))
     
 def motors_set(dest, speed):
     if dest in range(5):
@@ -61,7 +61,7 @@ def proc_imu(quat, acc, gyro, times=[]):
         else:
             com = get_myo_turn(roll)
             speed = speed_t
-            
+
         motors_set(com, speed)
 
 def proc_pose(p, times=[]):
@@ -98,13 +98,6 @@ def android_connect():
     sock.listen(1)
     conn, addr = sock.accept()
     return conn
-
-def check_int(str):
-    try:
-        int(str)
-        return True
-    except:
-        return False
 
 def on_arduino():
     while 1:
@@ -148,8 +141,8 @@ except Exception, e:
 
 try:
     print 'Try to connect with web'
-    server = WebsocketServer(8082, host='0.0.0.0')
-    client = server.set_fn_new_client(new_client)
+    web = WebsocketServer(8082, host='0.0.0.0')
+    client = web.set_fn_new_client(new_client)
     print 'Succes'
 except Exception, e:
     print 'Failed',e
@@ -160,6 +153,7 @@ try:
     print 'Succes'
 except Exception, e:
     print 'Failed',e
+    web.close()
     arduino.close()
 
 try:
@@ -167,6 +161,7 @@ try:
     myo = myo_connect()
 except Exception, e:
     print 'Failed ',e
+    web.close()
     android.close()
     arduino.close()  
         
@@ -192,12 +187,13 @@ try:
         if data:
             dest, speed, myo_st = decode(int(data))
             if myo_st == 0:
-       send_web(data, speed)
-               # motors_set(dest, speed)
+                motors_set(dest, speed)
+                send_web(dest, speed)
                 print("android: ",dest, " ", speed," ", myo_st)
 except KeyboardInterrupt:
     pass
 finally:
+    web.close()
     android.close()
     arduino.close()
     myo.disconnect()
