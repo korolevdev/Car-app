@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-from myo_raw import *
 import math
 import time 
+from GPIO_control import *
 
 #roll
 #>0.15 hand left - ехать влево
@@ -45,7 +45,7 @@ def get_roll(quat):
     return math.atan2(2.0 * (q0 * q1 + q2 * q3), 1.0 - 2.0 * (q1 * q1 + q2 * q2))
 
 def speed_setting(action, min, max):
-    speed = int(abs(action)/0.6 * 100)
+    speed = int(abs(action)/0.8 * 100)
     if (speed > max):
         speed = max
     if (speed < min):

@@ -62,3 +62,7 @@ def parse_command(com):
 		left()
 	elif com  ==  4:
 		right()
+
+def motors_set(dest):
+    if dest in range(5):
+        parse_command(dest)
