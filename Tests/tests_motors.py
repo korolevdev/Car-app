@@ -7,7 +7,6 @@ sys.path.insert(0, '../')
 from GPIO_control import * 
 from utils import check_int, decode
 from cvcam import *
-import threading
 import serial
 
 lv = 0
@@ -203,7 +202,7 @@ def test8_motors():
     stop()
     GPIO.cleanup()
 
- def test9_motors():
+def test9_motors():
     print("ATTENTION! HIGHEST SPEED!")
     i = 5
     while i >= 0:
@@ -233,7 +232,7 @@ def test8_motors():
     stop()
     GPIO.cleanup()   
 
- def test10_motors():
+def test10_motors():
     print("ATTENTION! HIGHEST SPEED!")
     i = 5
     while i >= 0:
@@ -263,7 +262,7 @@ def test8_motors():
     stop()
     GPIO.cleanup() 
 
- def test11_motors():
+def test11_motors():
     GPIO_setup()
     leftb = GPIO.PWM(lb, 50)
     rightb = GPIO.PWM(rb, 50)
@@ -304,5 +303,6 @@ def test_motors():
     test11_motors()
     tar.do_run = False
     tca.do_run = False
+    cam_off()
 
 test_motors()

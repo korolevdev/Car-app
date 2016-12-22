@@ -1,5 +1,5 @@
 def encode(a, b, c):
-	return int(a) << 24 | int(b) << 16 | 0 & 0xffff;
+	return int(a) << 24 | int(b) << 16 | int(c) & 0xffff;
 
 def decode(packet):
 	a = packet >> 24
