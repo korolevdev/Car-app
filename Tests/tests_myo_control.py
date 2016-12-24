@@ -3,7 +3,6 @@ import sys
 sys.path.insert(0, '../')
 from myo_control import *
 
-#TODO borders
 
 def test1_get_command_dest():
 	tmp = -0.4
