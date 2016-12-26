@@ -5,14 +5,10 @@
 leftb = None
 rightb = None
 myo = None
-android = None
 myo_st = 0
 
-web = 0
-conn_web = 0
-
 import threading
-from websocket_server import WebsocketServer
+#from websocket_server import WebsocketServer
 from utils import *
 from connect import *
 from myo_control import *
@@ -22,6 +18,7 @@ from myo_control import *
 #sudo kill -9 27635
 
 
+'''
 def new_client(client, server):
 	global conn_web
 	conn_web = client
@@ -30,19 +27,16 @@ def run_socket():
 	global web
 	web.run_forever()
 
-def send_web(lv, dist, speed, dest, dest_myo):
+def send_web(dest, speed):
 	global web, conn_web
 	if conn_web != 0 :
-		web.send_message(conn_web, perform_json(lv, dist, speed, dest, dest_myo))
-
+	   web.send_message(conn_web, perform_json(speed, dest, speed))
+'''
 
 def proc_imu(quat, acc, gyro, times=[]):
 	global myo_st
 	threads = threading.enumerate()
 	dist = threads[1].dist
-	lv = threads[1].lv
-	rv = threads[1].rv
-	lv = (lv + rv) // 2
 
 	if myo_st == 1:
 		roll = get_roll(quat)
@@ -57,15 +51,14 @@ def proc_imu(quat, acc, gyro, times=[]):
 		else:
 			com = get_myo_turn(roll)
 			speed = speed_t
-		print 'com = ',com,' speed = ', speed
-		send_web(lv,dist,speed,com,com)
-		motors_set(com, speed, dist, leftb, rightb)
+
+		motors_set(com, speed, dist)
 
 def proc_pose(p, times=[]):
 	global myo_st
 	threads = threading.enumerate()
 	dist = threads[1].dist
-
+	
 	if p == Pose.DOUBLE_TAP:
 		if myo_st == 2:
 			myo_st = 1
@@ -74,15 +67,15 @@ def proc_pose(p, times=[]):
 
 	if myo_st == 2:
 		if p == Pose.REST:
-			motors_set(0, 30, dist, leftb, rightb)
+			motors_set(0, 70, dist)
 		elif p == Pose.FINGERS_SPREAD:
-			motors_set(1, 30, dist, leftb, rightb)
+			motors_set(1, 70, dist)
 		elif p == Pose.FIST:
-			motors_set(2, 30, dist, leftb, rightb)
+			motors_set(2, 70, dist)
 		elif p == Pose.WAVE_IN:
-			motors_set(3, 30, dist, leftb, rightb)
+			motors_set(3, 70, dist)
 		elif p == Pose.WAVE_OUT:
-			motors_set(4, 30, dist, leftb, rightb)
+			motors_set(4)
 
 def arduino_read(ard):
 	lv = rv = dist = s = 0
@@ -92,7 +85,7 @@ def arduino_read(ard):
 		lv, rv, dist = decode(int(s))
 		return lv, rv, dist
 	else:
-		0, 0, 100
+		None, None, None
 
 def on_arduino():
 	is_connect = 0
@@ -103,7 +96,7 @@ def on_arduino():
 		print 'Success'
 	except Exception, e:
 		print 'Failed ',e
-	time.sleep(1)
+
 	if is_connect:
 		t = threading.currentThread()
 		while getattr(t,'do_run', True):
@@ -134,7 +127,7 @@ if __name__ == "__main__":
 	tar.dist = 100
 	tar.start()
 	ar.set()
-	
+
 	try:
 		print 'Try to connect with myo'
 		myo = myo_connect()
@@ -143,50 +136,41 @@ if __name__ == "__main__":
 		print 'Success'
 	except Exception, e:
 		print 'Failed ',e
-		tar.do_run = False
-	
+
 	try:
 		print 'Try to connect with android'
 		android = android_connect()
 		print 'Success'
 	except Exception, e:
 		print 'Failed',e
-		tar.do_run = False
-		myo.disconnect()
-
+		#web.close()
+		arduino.close()
+	
+	''' 
 	try:
 		print 'Try to connect with web'
 		web = WebsocketServer(8082, host='0.0.0.0')
 		client = web.set_fn_new_client(new_client)
-		print 'Success'
+		print 'Succes'
 	except Exception, e:
 		print 'Failed',e
-		tar.do_run = False
-		myo.disconnect()
-		android.close()
-	
-	twe = threading.Thread(target=run_socket, args=())
-	twe.start()
+	'''
+
 	try:
 		while 1:
-			if myo_st:
-				myo.run(1)
-
-			android.setblocking(0)	
+			myo.run(1)
+			threads = threading.enumerate()
+			dist = threads[1].dist
+			android.setnonblocking(0)	
 			try:
 				data = android.recv(1024)
-				if data:
-					dest, speed, myo_st = decode(int(data))
-					#motors_set(dest, speed, tar.dist, leftb, rightb)
-					send_web(tar.lv,tar.dist,speed,dest,dest)
+				dest, speed, myo_st = decode(int(data))
+				motors_set(dest, speed, tar.dist)
 			except:
-				True
-
+				data = None
+			if myo_st:
+				myo.run(1)
 	except KeyboardInterrupt:
 		pass
 	finally:
-		web.close()
-		tar.do_run = False
-		myo.disconnect()
-		android.close()
-		
+		True

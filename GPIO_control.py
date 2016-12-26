@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import RPi.GPIO as GPIO
+from fuzzy_logic import *
 
 lb = 20
 lr1 = 26
@@ -63,6 +64,12 @@ def parse_command(com):
 	elif com  ==  4:
 		right()
 
-def motors_set(dest):
-    if dest in range(5):
-        parse_command(dest)
+def motors_set(dest, speed, dist, leftb, rightb):
+	if dest in range(5):
+		parse_command(dest)
+	if (dest == 1):
+		speed = int(speed*fuzzy_speed_calc(dist)) 
+	print dest, ' ',speed, ' ', dist
+	if speed in range(101):
+			leftb.ChangeDutyCycle(speed)
+			rightb.ChangeDutyCycle(speed)

@@ -17,5 +17,5 @@ def check_int(str):
     except:
         return False
 
-def perform_json(real_speed, route, teor_speed):
-	return '{"real_speed":"' + str(real_speed) + '","route":' + str(route) + ',"teor_speed":"' + str(teor_speed) + '"}'
+def perform_json(real_speed, range, teor_speed, route_car, route_myo):
+	return '{"real_speed":' + str(real_speed) + ',"range":' + str(range) + ',"teor_speed":' + str(teor_speed) + ',"route_car":' + str(route_car) + ',"route_myo":' + str(route_myo) + '}'
