@@ -63,7 +63,7 @@ class Packet(object):
 
 
 class BT(object):
-    '''Implements the non-Myo-specific details of the Bluetooth protocol.'''
+    ## Implements the non-Myo-specific details of the Bluetooth protocol
     def __init__(self, tty):
         self.ser = serial.Serial(port=tty, baudrate=9600, dsrdtr=1)
         self.buf = []
@@ -92,11 +92,9 @@ class BT(object):
             p = self.recv_packet(t0 + timeout - time.time())
             if not p: return res
             res.append(p)
-        #print("recieved: ", res)
         return res
 
     def proc_byte(self, c):
-        #print("&&&&&&&&: ", c)
         if not self.buf:
             if c in [0x00, 0x80, 0x08, 0x88]:
                 self.buf.append(c)
@@ -104,7 +102,6 @@ class BT(object):
         elif len(self.buf) == 1:
             self.buf.append(c)
             self.packet_len = 4 + (self.buf[0] & 0x07) + self.buf[1] # Something to do with vibrate
-            #print(self.buf, " && ", self.buf[0] & 0x07)
             return None
         else:
             self.buf.append(c)
@@ -205,22 +202,15 @@ class MyoRaw(object):
 
     def connect(self):
         ## stop everything from before
-        #print("Disconnect starts")
         self.bt.end_scan()
         self.bt.disconnect(0)
         self.bt.disconnect(1)
         self.bt.disconnect(2)
-        #print("Disconnect ends")
 
         ## start scanning
-        #print('scanning...')
-        #print("discover happens")
         self.bt.discover()
-        #print("discover ends")
-
         while True:
             p = self.bt.recv_packet()
-            #print('scan response:', p)
 
             if p.payload.endswith(b'\x06\x42\x48\x12\x4A\x7F\x2C\x48\x47\xB9\xDE\x04\xA9\x01\x00\x06\xD5'):
                 addr = list(multiord(p.payload[2:8]))
@@ -229,16 +219,11 @@ class MyoRaw(object):
 
         ## connect and wait for status event
         conn_pkt = self.bt.connect(addr)
-        #print("conn_pkt happend")
         self.conn = multiord(conn_pkt.payload)[-1]
-        #print("multiord happened")
         self.bt.wait_event(3, 0)
-        #print("multiord ends")
-
         ## get firmware version
         fw = self.read_attr(0x17)
         _, _, _, _, v0, v1, v2, v3 = unpack('BHBBHHHH', fw.payload)
-        #print('firmware version: %d.%d.%d.%d' % (v0, v1, v2, v3))
 
         self.old = (v0 == 0)
         #print("Find me!")
