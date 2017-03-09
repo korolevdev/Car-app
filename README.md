@@ -1,8 +1,8 @@
 # Application for car
 Course project of Quality assurance. BMSTU 7 semester. 
 
-<image height=49% width=49% src="https://static.thalmic.com/sapphire/smartglasses/myo_smartglass.png">   
-<image height=49% width=49% src="https://pp.userapi.com/c837138/v837138645/ee00/YehFJslSpQo.jpg">   
+<image height=100% width=100% src="https://pp.userapi.com/c837138/v837138645/ee00/YehFJslSpQo.jpg">  
+<image height=49% width=49% src="https://static.thalmic.com/sapphire/smartglasses/myo_smartglass.png">    
 
 ## Задачи
 - ~~Написать протокол обмена данными между code.py и manager.py по аналогии с протоколом raspberry и arduino (двоичные сдвиги)~~
